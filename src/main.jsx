@@ -8,6 +8,7 @@ import './index.css'
 import SignUp from "./component/signUp/signUp"
 import HomePage from "./component/homePage/home"
 import SignIn from './component/signIn/signIn.jsx'
+import Profile from './component/profile/profile.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -15,6 +16,7 @@ const router = createBrowserRouter(
       <Route index={true}  path="/" element={<HomePage/>} />
       <Route path="/signUp" element={<SignUp/>} />
       <Route path='/signIn' element={<SignIn/>} />
+      <Route path='/profile' element={<Profile/>} />
     </Route>
   )
 )

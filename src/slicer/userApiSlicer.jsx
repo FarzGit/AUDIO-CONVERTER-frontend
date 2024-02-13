@@ -12,8 +12,15 @@ export const userApiSlicer = apiSlicer.injectEndpoints({
                 body:data
             })
             
+        }),
+        logout:builder.mutation({
+            query: ()=>({
+                url:`${USER_URL}/logout`,
+                method:'POST',
+
+            })
         })
     })
 })
 
-export const {useLoginMutation} = userApiSlicer
+export const {useLoginMutation,useLogoutMutation} = userApiSlicer
