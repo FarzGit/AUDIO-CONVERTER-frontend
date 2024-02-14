@@ -38,7 +38,10 @@ const signUp = () => {
         e.preventDefault()
         if (password !== confirmPassword) {
             toast.error('password donot match')
-        } else {
+        }else if(!name || !mobile || !email || !password || !confirmPassword){
+            toast.error('Please fill in all fields');
+        }
+         else {
             try {
 
                const res = await register({name, mobile, email, password}).unwrap()

@@ -38,7 +38,7 @@ const signIn = () => {
             dispatch(setCredentials({...res}))
             navigate('/')
             
-        } catch (err) {
+        }catch (err) {
 
             toast.error(err?.data?.message || err.message)
             
