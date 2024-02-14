@@ -19,8 +19,15 @@ export const userApiSlicer = apiSlicer.injectEndpoints({
                 method:'POST',
 
             })
+        }),
+        register:builder.mutation({
+            query : (data)=>({
+                url:`${USER_URL}`,
+                method:'POST',
+                body:data
+            })
         })
     })
 })
 
-export const {useLoginMutation,useLogoutMutation} = userApiSlicer
+export const {useLoginMutation,useLogoutMutation,useRegisterMutation} = userApiSlicer
