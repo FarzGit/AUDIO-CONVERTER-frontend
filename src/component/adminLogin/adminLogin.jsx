@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import '../adminLogin/adminLogin.css'
 import { setAdminCredentials } from '../../slicer/authSlicer'
-import { useLogOutMutation } from '../../slicer/adminSlicer'
+import { useLogInMutation } from '../../slicer/adminSlicer'
 import {useNavigate} from 'react-router-dom'
 import {useDispatch,useSelector} from 'react-redux'
 import { useEffect, useState } from 'react'
@@ -17,7 +17,8 @@ const adminSignIn = () => {
     const dispatch = useDispatch()
 
     const {adminInfo} = useSelector((state)=>state.auth)
-    const [login] = useLogOutMutation()
+    const [login] = useLogInMutation()
+
 
     useEffect(()=>{
         if(adminInfo){

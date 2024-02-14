@@ -46,7 +46,7 @@ const logoutAdmin = asyncHandler(async (req, res) => {
 //route     GET /api/admin/users
 //@access   Private
 const getUsers = asyncHandler(async (req, res) => {
-  const user = await User.find({}).select("-password");
+   const user = await User.find({}).select("-password");
   res.json({ user });
 });
 
@@ -210,7 +210,7 @@ function Dashboard() {
       });
       setFilteredUsers(filtered);
     };
-
+    
     // Call the filter function whenever users or search value changes
     filterUsers();
   }, [users, search]);
