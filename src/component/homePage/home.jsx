@@ -34,7 +34,7 @@ const homePage = () => {
                     {userInfo ?(
                         <>
                         <button onClick={logoutHandle} className='font-medium cursor-pointer'>Logout</button>
-                            <span className='font-semibold'>{userInfo.name.toUpperCase()}</span>
+                            <span className='font-semibold'>{userInfo.name}</span>
                         </>
                     ):(
                         <>

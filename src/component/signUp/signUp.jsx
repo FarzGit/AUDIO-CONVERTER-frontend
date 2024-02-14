@@ -41,15 +41,14 @@ const signUp = () => {
         } else {
             try {
 
-                console.log(name)
-                console.log(mobile)
-                console.log(email)
-                console.log(password)
-
-                const res = await register({name, mobile, email, password}).unwrap()
-                console.log("res:", ...res)
+               const res = await register({name, mobile, email, password}).unwrap()
+                console.log("res:", res)
                 dispatch(setCredentials({ ...res }))
-                navigate('/')
+                toast.success('Sign up successful! ');
+                setTimeout(() => {
+                    navigate('/');
+                }, 2000); 
+                
 
             } catch (err) {
                 console.log(err)

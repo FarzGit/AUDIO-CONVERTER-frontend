@@ -1,26 +1,103 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { IoClose } from "react-icons/io5";
+import { useSelector, useDispatch } from 'react-redux'
+import { useUpdateProfileMutation } from '../../slicer/userApiSlicer';
+import { setCredentials } from '../../slicer/authSlicer';
+import { toast } from 'react-toastify';
+
+
 
 const Profile = () => {
     const [isChangePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
     const [isEditProfileModalOpen, setEditProfileModalOpen] = useState(false);
+    const [name, setName] = useState('')
+    const [mobile, setMobile] = useState('')
+    const [oldPassword, setOldPassword] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setComfirmPassword] = useState('')
+    // const [email, setEmail] = useState('')
+
 
     const openChangePasswordModal = () => {
         setChangePasswordModalOpen(true);
     };
-
     const closeChangePasswordModal = () => {
         setChangePasswordModalOpen(false);
     };
-
     const openEditProfileModal = () => {
         setEditProfileModalOpen(true);
     };
-
     const closeEditProfileModal = () => {
         setEditProfileModalOpen(false);
     };
+
+    const dispatch = useDispatch()
+    const { userInfo } = useSelector((state) => state.auth)
+    const [updateProfile] = useUpdateProfileMutation()
+
+    useEffect(() => {
+
+        setName(userInfo.name)
+        setMobile(userInfo.mobile)
+        // setEmail(userInfo.email)
+
+
+    }, [userInfo.name, userInfo.mobile])
+
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault()
+        try {
+
+            const res = await updateProfile({
+                _id: userInfo._id,
+                name,
+                mobile
+            }).unwrap()
+
+            console.log('RES:', res)
+            dispatch(setCredentials(res))
+            toast.success('updated succesfully')
+            closeEditProfileModal()
+        } catch (err) {
+            toast.error(err?.data?.message || err.error)
+        }
+
+
+    }
+
+    const handleChangePassword = async (e) => {
+
+        e.preventDefault();
+        try {
+
+            const formData = {
+                _id: userInfo._id,
+                oldPassword,
+                password,
+                confirmPassword
+            };
+
+            if (password !== confirmPassword) {
+                toast.error('Password do not match')
+            }
+
+
+
+            const res = await updateProfile(formData).unwrap()
+            dispatch(setCredentials(res))
+            toast.success('Updated successfully');
+            closeChangePasswordModal();
+
+        } catch (err) {
+            toast.error(err?.data?.message || err.error);
+        }
+
+
+
+
+    }
+
 
     return (
         <div>
@@ -34,15 +111,15 @@ const Profile = () => {
                         <button onClick={openEditProfileModal}>Edit Profile</button>
                     </div>
                     <div className="flex justify-center pt-[80px]">
-                        <h1 className="font-bold text-[28px]">FARZIN AHAMMED K</h1>
+                        <h1 className="font-bold text-[28px]">{userInfo.name}</h1>
                     </div>
                     <div className="flex justify-center">
-                        <h3>7994371305</h3>
+                        <h3>{userInfo.mobile}</h3>
                     </div>
                     <div className="flex justify-center">
-                        <h3>farzinahammed.in@gmail.com</h3>
+                        <h3>{userInfo.email}</h3>
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -51,21 +128,21 @@ const Profile = () => {
 
                 <div>
                     <div className='flex justify-center'>
-                    <p className="title">Change Password</p>
+                        <p className="title">Change Password</p>
                     </div>
                     <div className='mt-8 flex justify-center items-center'>
 
-                        <form className='flex flex-col w-[100%]'>
+                        <form onSubmit={handleChangePassword} className='flex flex-col w-[100%]'>
                             <div className="input-field">
-                                <input required="" className="input" type="text" />
+                                <input onChange={(e)=>setOldPassword(e.target.value)} className="input" type="text" />
                                 <label className="label" htmlFor="emailInput">Enter Old Password</label>
                             </div>
                             <div className="input-field">
-                                <input required="" className="input" type="text" />
+                                <input onChange={(e)=>setPassword(e.target.value)} className="input" type="text" />
                                 <label className="label" htmlFor="emailInput">Enter New Password</label>
                             </div>
                             <div className="input-field">
-                                <input required="" className="input" type="text" />
+                                <input onChange={(e)=>setComfirmPassword(e.target.value)} className="input" type="text" />
                                 <label className="label" htmlFor="emailInput">Confirm Password</label>
                             </div>
                             <button className="submit-btn">Submit</button>
@@ -81,20 +158,24 @@ const Profile = () => {
                 <button onClick={closeEditProfileModal}><IoClose /></button>
                 <div>
                     <div className='flex justify-center'>
-                    <p className="title">Edit Profile</p>
+                        <p className="title">Edit Profile</p>
                     </div>
                     <div className='mt-8 flex justify-center items-center'>
 
-                        <form className='flex flex-col w-[100%]'>
+                        <form onSubmit={handleUpdateProfile} className='flex flex-col w-[100%]'>
                             <div className="input-field">
-                                <input required="" className="input" type="text" />
+                                <input onChange={(e) => setName(e.target.value)} value={name} className="input" type="text" />
                                 <label className="label" htmlFor="emailInput">Enter Name</label>
                             </div>
                             <div className="input-field">
-                                <input required="" className="input" type="text" />
+                                <input onChange={(e) => setMobile(e.target.value)} value={mobile} className="input" type="text" />
                                 <label className="label" htmlFor="emailInput">Enter Number</label>
                             </div>
-                            
+                            {/* <div className="input-field">
+                                <input onChange={(e) => setEmail(e.target.value)} value={email} className="input" type="text" />
+                                <label className="label" htmlFor="emailInput">Enter Email</label>
+                            </div> */}
+
                             <button className="submit-btn">Submit</button>
                         </form>
                     </div>

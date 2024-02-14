@@ -9,14 +9,18 @@ import SignUp from "./component/signUp/signUp"
 import HomePage from "./component/homePage/home"
 import SignIn from './component/signIn/signIn.jsx'
 import Profile from './component/profile/profile.jsx'
-
+import PrivateRoute from './component/privateRoute.jsx'
+import Modal from 'react-modal';
+Modal.setAppElement('#root');
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App/>}>
       <Route index={true}  path="/" element={<HomePage/>} />
       <Route path="/signUp" element={<SignUp/>} />
       <Route path='/signIn' element={<SignIn/>} />
-      <Route path='/profile' element={<Profile/>} />
+      <Route path='' element={<PrivateRoute/>} >
+      <Route path='/profile' element={<Profile/>}/>
+      </Route>
     </Route>
   )
 )

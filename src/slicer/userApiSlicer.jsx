@@ -26,8 +26,15 @@ export const userApiSlicer = apiSlicer.injectEndpoints({
                 method:'POST',
                 body:data
             })
+        }),
+        updateProfile:builder.mutation({
+          query : (data)=>({
+            url:`${USER_URL}/editProfile`,
+            method:'PUT',
+            body:data
+          })  
         })
     })
 })
 
-export const {useLoginMutation,useLogoutMutation,useRegisterMutation} = userApiSlicer
+export const {useLoginMutation,useLogoutMutation,useRegisterMutation,useUpdateProfileMutation} = userApiSlicer
