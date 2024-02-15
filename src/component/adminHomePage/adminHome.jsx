@@ -5,9 +5,10 @@ import { MdDelete } from "react-icons/md";
 import { useLogOutMutation, useGetUserDataMutation, useUpdateUserDataMutation, useBlockUserMutation, useDeleteUserMutation } from "../../slicer/adminSlicer";
 import { adminlogOut, logOut } from '../../slicer/authSlicer'
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, Link} from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useEffect, useState } from "react";
 import Modal from 'react-modal';
+import { toast } from 'react-toastify';
 
 
 const customStyles = {
@@ -99,16 +100,33 @@ const Dashboard = () => {
     const handleUpdateUser = async (e) => {
         e.preventDefault()
 
-        try {
+        const mobileRegex = /^(?![0-5])\d{10}$/;
+        const nameRegex = /^[^\s]+(\s[^\s]+)*$/;
 
-            const res = await updateUserData({ _id: userId, name, mobile }).unwrap()
-            console.log('userUpdateRes is :', res);
-            setEditProfileModalOpen(false)
+        if (!name || !mobile) {
+            toast.error("All fields should be filled");
+        } else if (!name.match(nameRegex)) {
+            toast.error("Name cannot contain consecutive spaces");
+        } else if (!mobile.match(mobileRegex)) {
+            toast.error(
+                "Enter a valid mobile number"
+            );
+        } else {
+
+            try {
+
+                const res = await updateUserData({ _id: userId, name, mobile }).unwrap()
+                console.log('userUpdateRes is :', res);
+                setEditProfileModalOpen(false)
 
 
-        } catch (err) {
-            console.log(err)
+            } catch (err) {
+                console.log(err)
+            }
+
         }
+
+
 
 
     }
@@ -149,13 +167,15 @@ const Dashboard = () => {
         console.log('userId id :', userId)
 
         if (userId) {
-            await deleteUser(userId).unwrap()
+            const res = await deleteUser(userId).unwrap()
+            console.log('res is :', res);
             setData((prev) => !prev)
             setUserId(null)
             setIsOpen(false)
-            if (userInfo && userInfo._id === userId) {
-                dispatch(logOut())
-            }
+
+            // console.log('entered inton= dispatch')
+            dispatch(logOut())
+
         }
 
 
@@ -184,7 +204,7 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div className="relative pt-[70px] pr-[25px] pl-[25px] overflow-x-auto shadow-md sm:rounded-lg">
                 <div className="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900 p-5">
                     <div>
 

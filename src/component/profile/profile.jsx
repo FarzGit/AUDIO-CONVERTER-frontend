@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { IoClose } from "react-icons/io5";
@@ -57,21 +58,36 @@ const Profile = () => {
 
     const handleUpdateProfile = async (e) => {
         e.preventDefault()
-        try {
 
-            const res = await updateProfile({
-                _id: userInfo._id,
-                name,
-                mobile
-            }).unwrap()
+        const mobileRegex = /^(?![0-5])\d{10}$/;
+        const nameRegex = /^[^\s]+(\s[^\s]+)*$/;
 
-            console.log('RES:', res)
-            dispatch(setCredentials(res))
-            toast.success('updated succesfully')
-            closeEditProfileModal()
-        } catch (err) {
-            toast.error(err?.data?.message || err.error)
-        }
+        if (!name || !mobile ) {
+            toast.error("All fields should be filled");
+          } else if (!name.match(nameRegex)) {
+              toast.error("Name cannot contain consecutive spaces");
+          } else if (!mobile.match(mobileRegex)) {
+              toast.error(
+                  "Enter a valid mobile number"
+                  );
+              }else{
+                try {
+
+                    const res = await updateProfile({
+                        _id: userInfo._id,
+                        name,
+                        mobile
+                    }).unwrap()
+        
+                    console.log('RES:', res)
+                    dispatch(setCredentials(res))
+                    toast.success('updated succesfully')
+                    closeEditProfileModal()
+                } catch (err) {
+                    toast.error(err?.data?.message || err.error)
+                }
+              }
+        
 
 
     }
@@ -79,29 +95,43 @@ const Profile = () => {
     const handleChangePassword = async (e) => {
 
         e.preventDefault();
-        try {
 
-            const formData = {
-                _id: userInfo._id,
-                oldPassword,
-                password,
-                confirmPassword
-            };
+        const passwordRegex = /^(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])(?=.*[a-zA-Z0-9]).{6,}$/;
 
-            if (password !== confirmPassword) {
-                toast.error('Password do not match')
+    
+        if(!password || !confirmPassword || !oldPassword){
+            toast.error('Please fill all the field')
+        }else if(!password.match(passwordRegex)){
+            toast.error( "Password must be at least 6 characters and contain at least one special character")
+        }else if(password !== confirmPassword){
+            toast.error('Password do not match')
+        }
+        else{
+            try {
+
+                const formData = {
+                    _id: userInfo._id,
+                    oldPassword,
+                    password,
+                    confirmPassword
+                };
+    
+                
+    
+    
+    
+                const res = await updateProfile(formData).unwrap()
+                dispatch(setCredentials(res))
+                toast.success('Updated successfully');
+                closeChangePasswordModal();
+    
+            } catch (err) {
+                toast.error(err?.data?.message || err.error);
             }
 
-
-
-            const res = await updateProfile(formData).unwrap()
-            dispatch(setCredentials(res))
-            toast.success('Updated successfully');
-            closeChangePasswordModal();
-
-        } catch (err) {
-            toast.error(err?.data?.message || err.error);
         }
+
+        
 
 
 

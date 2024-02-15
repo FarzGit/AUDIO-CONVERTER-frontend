@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 
 
 /* eslint-disable react-hooks/rules-of-hooks */
@@ -31,12 +32,31 @@ const AdminAddNewUser = () => {
 
 
     const handleSubmit = async (e) => {
+
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    const passwordRegex = /^(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])(?=.*[a-zA-Z0-9]).{6,}$/;
+    const mobileRegex = /^(?![0-5])\d{10}$/;
+    const nameRegex = /^[^\s]+(\s[^\s]+)*$/;
+    
         e.preventDefault()
-        if (password !== confirmPassword) {
-            toast.error('password donot match')
-        } else if (!name || !mobile || !email || !password || !confirmPassword) {
-            toast.error('Please fill in all fields');
-        }
+
+        if (!name || !mobile || !email || !password) {
+            toast.error("All fields should be filled");
+          } else if (!name.match(nameRegex)) {
+              toast.error("Name cannot contain consecutive spaces");
+          } else if (!mobile.match(mobileRegex)) {
+              toast.error(
+                  "Enter a valid mobile number"
+                  );
+              } else if (!email.match(emailRegex)) {
+                toast.error("Invalid email address");
+          } else if (!password.match(passwordRegex)) {
+            toast.error(
+              "Password must be at least 6 characters and contain at least one special character"
+            );
+          } else if (password !== confirmPassword) {
+            toast.error("Password do not match");
+          }
         else {
             try {
 
@@ -46,7 +66,7 @@ const AdminAddNewUser = () => {
                 toast.success('New user created');
                 setTimeout(() => {
                     navigate('/admin-home');
-                }, 3000);
+                }, 1000);
 
 
             } catch (err) {
