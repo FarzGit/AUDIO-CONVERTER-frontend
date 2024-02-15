@@ -147,7 +147,7 @@ const Profile = () => {
         <div>
             <div className="flex justify-center items-center h-screen bg-gray-50 relative">
                 <div onClick={openChangeImageModalOpen} className="absolute top-0 z-20">
-                    <img className="w-40 h-40 m-5 rounded-full cursor-pointer" src={`/profilePic/${userInfo.profile}`} alt="Profile" />
+                    <img className="w-40 h-40 m-5 rounded-full cursor-pointer" src={userInfo && userInfo.profile ? `/profilePic/${userInfo.profile}` : 'default-icom.jpg'} alt="Profile" />
                 </div>
                 <div className="w-[60%] h-[500px] rounded-lg relative z-10 shadow-xl bg-white  border-gray-300">
                     <div className="flex justify-between pr-3 pl-3 pt-1">
@@ -230,7 +230,7 @@ const Profile = () => {
                 <div className=''>
                     <div className='flex justify-center'>
                         <label htmlFor="profile-image">
-                            <img id="profile-img" className="w-40 h-40 m-5 rounded-full cursor-pointer" src={profileImage ? URL.createObjectURL(profileImage):''} alt="Profile" />
+                            <img id="profile-img" className="w-40 h-40 m-5 rounded-full cursor-pointer" src={profileImage ? URL.createObjectURL(profileImage):'default-icom.jpg'} alt="Profile" />
                         </label>
                         <input type="file" id="profile-image" style={{ display: 'none' }} onChange={handleImageChange} ></input>
                     </div>

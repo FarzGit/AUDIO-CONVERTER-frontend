@@ -2,11 +2,10 @@ import { HiOutlineLogout } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { FaUserEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-// import '../adminDashboard/dashboard.css'
 import { useLogOutMutation, useGetUserDataMutation, useUpdateUserDataMutation, useBlockUserMutation, useDeleteUserMutation } from "../../slicer/adminSlicer";
 import { adminlogOut, logOut } from '../../slicer/authSlicer'
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link} from 'react-router-dom'
 import { useEffect, useState } from "react";
 import Modal from 'react-modal';
 
@@ -32,7 +31,8 @@ const Dashboard = () => {
     const [userId, setUserId] = useState(null);
     const [modalIsOpen, setIsOpen] = useState(false);
     const [data, setData] = useState(true)
-    // const [filteredUser,setFilteredUser] = useState([])
+    const [search, setSearch] = useState('')
+    const [filteredUser, setFilteredUser] = useState([])
 
     console.log('user is :', users)
 
@@ -67,17 +67,21 @@ const Dashboard = () => {
     }, [data, getUserData])
 
 
-    // useEffect(()=>{
-    //     const filterUser = ()=>{
-    //         const filtered = users.filter((user)=>{
-    //             const name = user.name
-    //             const mobile = user.mobile
-    //             const email = user.email
-    //         })
-    //         setFilteredUser(filtered)
-    //     }
-    //     filterUser()
-    // },[users])
+    useEffect(() => {
+        const filterUser = () => {
+            const filtered = users.filter((user) => {
+                const name = user.name
+                const mobile = user.mobile
+                const email = user.email
+                const searchValue = search
+                return (
+                    name.includes(searchValue) || email.includes(searchValue) || mobile.includes(searchValue)
+                );
+            })
+            setFilteredUser(filtered)
+        }
+        filterUser()
+    }, [users, search])
 
 
 
@@ -142,7 +146,7 @@ const Dashboard = () => {
 
     const handleDelete = async () => {
 
-        console.log('userId id :' , userId)
+        console.log('userId id :', userId)
 
         if (userId) {
             await deleteUser(userId).unwrap()
@@ -188,8 +192,9 @@ const Dashboard = () => {
                     </div>
                     <label htmlFor="table-search" className="sr-only">Search</label>
                     <div className="relative flex">
-                        <input type="text" id="table-search-users" className="block p-2 text-sm text-gray-900 border border-gray-300 rounded-tl-md rounded-bl-md w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for users" />
+                        <input onChange={(e) => setSearch(e.target.value)} value={search} type="text" id="table-search-users" className="block p-2 text-sm text-gray-900 border border-gray-300 rounded-tl-md rounded-bl-md w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for users" />
                         <button className="bg-sky-500 p-2 rounded-tr-md rounded-br-md text-white">Search</button>
+                        <Link to="/admin-addNewUser" className="bg-gray-500 ml-3 p-2 rounded-tr-md rounded text-white">ADD USER</Link>
                     </div>
                 </div>
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -212,7 +217,7 @@ const Dashboard = () => {
                     </thead>
                     <tbody>
 
-                        {users.map((user) => (
+                        {filteredUser.map((user) => (
 
 
 

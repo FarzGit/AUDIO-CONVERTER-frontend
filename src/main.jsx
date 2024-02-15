@@ -12,6 +12,7 @@ import Profile from './component/profile/profile.jsx'
 import PrivateRoute from './component/privateRoute.jsx'
 import Dashboard from './component/adminHomePage/adminHome.jsx'
 import AdminSignIn from './component/adminLogin/adminLogin.jsx'
+import AdminAddNewUser from './component/adminAddNewUser/addNewUser.jsx'
 import Modal from 'react-modal';
 Modal.setAppElement('#root');
 const router = createBrowserRouter(
@@ -25,6 +26,8 @@ const router = createBrowserRouter(
       </Route>
       <Route path='/admin-home' element={<Dashboard/>}/>
       <Route path='/admin-sign' element={<AdminSignIn/>}/>
+      <Route path='/admin-addNewUser' element={<AdminAddNewUser/>}/>
+
 
     </Route>
   )
