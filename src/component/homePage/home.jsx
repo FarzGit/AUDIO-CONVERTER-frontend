@@ -42,7 +42,7 @@ const homePage = () => {
                         </>
                     )}
                     
-                   <Link to="/profile"> <img className="w-[50px] rounded-full cursor-pointer" src='myimage.jpg' alt="My Image" /></Link>
+                   <Link to="/profile"> <img className="w-[50px] rounded-full cursor-pointer" src={userInfo && userInfo.profile ? `/profilePic/${userInfo.profile}` : 'default-icom.jpg'} alt="My Image" /></Link>
                 </div>
             </div>
         </>

@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useUpdateProfileMutation } from '../../slicer/userApiSlicer';
 import { setCredentials } from '../../slicer/authSlicer';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 
 
@@ -15,9 +16,11 @@ const Profile = () => {
 
     const [name, setName] = useState('')
     const [mobile, setMobile] = useState('')
+
     const [oldPassword, setOldPassword] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setComfirmPassword] = useState('')
+    const [profileImage, setProfileImage] = useState('')
     // const [email, setEmail] = useState('')
 
     const openChangeImageModalOpen = () => {
@@ -106,11 +109,45 @@ const Profile = () => {
     }
 
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setProfileImage(file)
+    }
+
+
+    const handleImageSave = async () => {
+        console.log('asdfsadfasdfsadf', profileImage)
+        const formData = new FormData()
+        formData.append('profile-image', profileImage)
+        console.log(formData)
+
+        try {
+            console.log('asdfsadfasdfsadf')
+            const res = await axios.put('/api/users/profile-image', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+
+            console.log('res.data:', res.data)
+
+
+            dispatch(setCredentials({ ...(res.data) }))
+            closeChangeImageModal()
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+
+
     return (
         <div>
             <div className="flex justify-center items-center h-screen bg-gray-50 relative">
                 <div onClick={openChangeImageModalOpen} className="absolute top-0 z-20">
-                    <img className="w-40 h-40 m-5 rounded-full cursor-pointer" src="myimage.jpg" alt="Profile" />
+                    <img className="w-40 h-40 m-5 rounded-full cursor-pointer" src={`/profilePic/${userInfo.profile}`} alt="Profile" />
                 </div>
                 <div className="w-[60%] h-[500px] rounded-lg relative z-10 shadow-xl bg-white  border-gray-300">
                     <div className="flex justify-between pr-3 pl-3 pt-1">
@@ -129,6 +166,7 @@ const Profile = () => {
 
                 </div>
             </div>
+
 
             <Modal isOpen={isChangePasswordModalOpen} onRequestClose={closeChangePasswordModal} style={{ overlay: { zIndex: 1000 }, content: { width: '30%', height: '60%', margin: 'auto', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', border: 'none' } }}>
                 <button onClick={closeChangePasswordModal}><IoClose /></button>
@@ -190,16 +228,16 @@ const Profile = () => {
                 <button onClick={closeChangeImageModal}><IoClose /></button>
 
                 <div className=''>
-    <div className='flex justify-center'>
-        <label htmlFor="profile-image">
-            <img id="profile-img" className="w-40 h-40 m-5 rounded-full cursor-pointer" src="myimage.jpg" alt="Profile" />
-        </label>
-        <input type="file" id="profile-image" style={{display:'none'}} ></input>
-    </div>
-    <div className='flex justify-center'>
-        <button className='bg-blue-600 text-white ml-4 rounded-md w-[60px] h-[35px]'>Save</button>
-    </div>                   
-</div>
+                    <div className='flex justify-center'>
+                        <label htmlFor="profile-image">
+                            <img id="profile-img" className="w-40 h-40 m-5 rounded-full cursor-pointer" src={profileImage ? URL.createObjectURL(profileImage):''} alt="Profile" />
+                        </label>
+                        <input type="file" id="profile-image" style={{ display: 'none' }} onChange={handleImageChange} ></input>
+                    </div>
+                    <div className='flex justify-center'>
+                        <button onClick={handleImageSave} className='bg-blue-600 text-white ml-4 rounded-md w-[60px] h-[35px]'>Save</button>
+                    </div>
+                </div>
 
 
             </Modal>

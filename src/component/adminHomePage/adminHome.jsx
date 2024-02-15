@@ -3,12 +3,24 @@ import { IoClose } from "react-icons/io5";
 import { FaUserEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 // import '../adminDashboard/dashboard.css'
-import { useLogOutMutation, useGetUserDataMutation, useUpdateUserDataMutation, useBlockUserMutation } from "../../slicer/adminSlicer";
+import { useLogOutMutation, useGetUserDataMutation, useUpdateUserDataMutation, useBlockUserMutation, useDeleteUserMutation } from "../../slicer/adminSlicer";
 import { adminlogOut, logOut } from '../../slicer/authSlicer'
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from "react";
 import Modal from 'react-modal';
+
+
+const customStyles = {
+    content: {
+        top: "50%",
+        left: "50%",
+        right: "auto",
+        bottom: "auto",
+        marginRight: "-50%",
+        transform: "translate(-50%, -50%)",
+    },
+};
 
 
 const Dashboard = () => {
@@ -18,6 +30,8 @@ const Dashboard = () => {
     const [name, setName] = useState('')
     const [mobile, setMobile] = useState('')
     const [userId, setUserId] = useState(null);
+    const [modalIsOpen, setIsOpen] = useState(false);
+    const [data, setData] = useState(true)
     // const [filteredUser,setFilteredUser] = useState([])
 
     console.log('user is :', users)
@@ -39,6 +53,7 @@ const Dashboard = () => {
     const [getUserData] = useGetUserDataMutation()
     const [updateUserData] = useUpdateUserDataMutation()
     const [blockUser] = useBlockUserMutation()
+    const [deleteUser] = useDeleteUserMutation()
 
     useEffect(() => {
 
@@ -49,7 +64,7 @@ const Dashboard = () => {
         }
         fetchUser()
 
-    }, [getUserData])
+    }, [data, getUserData])
 
 
     // useEffect(()=>{
@@ -114,7 +129,7 @@ const Dashboard = () => {
             if (user._id === userId) {
                 return {
                     ...user,
-                    isStatus: res.isStatus, 
+                    isStatus: res.isStatus,
                 };
             }
             return user;
@@ -124,6 +139,33 @@ const Dashboard = () => {
 
 
     }
+
+    const handleDelete = async () => {
+
+        console.log('userId id :' , userId)
+
+        if (userId) {
+            await deleteUser(userId).unwrap()
+            setData((prev) => !prev)
+            setUserId(null)
+            setIsOpen(false)
+            if (userInfo && userInfo._id === userId) {
+                dispatch(logOut())
+            }
+        }
+
+
+    }
+
+    const handleDeleteClick = (userId) => {
+        setUserId(userId)
+        setIsOpen(true)
+
+    }
+
+    const closeModal = () => {
+        setIsOpen(false);
+    };
 
 
     return (
@@ -190,16 +232,16 @@ const Dashboard = () => {
                                     <button onClick={() => handleUpdate(user)} className="">
                                         <FaUserEdit size={30} />
                                     </button>
-                                    <button className="">
+                                    <button onClick={() => handleDeleteClick(user._id)} className="">
                                         <MdDelete size={30} />
                                     </button>
                                 </td>
                                 <td className="px-6 py-4">
                                     {user.isStatus ? (
-                                        <button onClick={()=>handleBlockUser(user._id)} type="button" data-modal-show="editUserModal" className="font-medium text-white  bg-slate-500 p-1 rounded-md hover:bg-red-500">Block</button>
+                                        <button onClick={() => handleBlockUser(user._id)} type="button" data-modal-show="editUserModal" className="font-medium text-white  bg-slate-500 p-1 rounded-md hover:bg-red-500">Block</button>
 
                                     ) : (
-                                        <button onClick={()=>handleBlockUser(user._id)} type="button" data-modal-show="editUserModal" className="font-medium text-white  bg-slate-500 p-1 rounded-md hover:bg-green-500">Unblock</button>
+                                        <button onClick={() => handleBlockUser(user._id)} type="button" data-modal-show="editUserModal" className="font-medium text-white  bg-slate-500 p-1 rounded-md hover:bg-green-500">Unblock</button>
 
                                     )}
 
@@ -235,6 +277,31 @@ const Dashboard = () => {
 
                 </div>
 
+            </Modal>
+
+            <Modal
+                isOpen={modalIsOpen}
+                // onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Delete User Modal"
+            >
+                <p className="font-bold text-xl mt-5 text-blue-600">
+                    Are you sure you want to delete this user?
+                </p>
+                <div className="flex justify-around mt-10">
+                    <button
+                        onClick={closeModal}
+                        className="h-10 w-20 hover:bg-green-700 bg-black rounded-lg text-white hover:scale-105"
+                    >
+                        No
+                    </button>
+                    <button
+                        onClick={handleDelete}
+                        className="h-10 w-20 hover:bg-red-700 bg-black rounded-lg text-white hover:scale-105"
+                    >
+                        Proceed
+                    </button>
+                </div>
             </Modal>
         </div>
     )

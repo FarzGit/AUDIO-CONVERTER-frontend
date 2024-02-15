@@ -37,9 +37,15 @@ export const adminApiSlicer = apiSlicer.injectEndpoints({
                 url:`${ADMIN_URL}/users/block-unblock?id=${data}`,
                 method:'PATCH'
             })
+        }),
+        deleteUser:builder.mutation({
+            query:(data)=>({
+                url:`${ADMIN_URL}/users/delete?id=${data}`,
+                method: 'DELETE',
+            })
         })
 
     })
 })
 
-export const {useLogInMutation,useLogOutMutation,useGetUserDataMutation,useUpdateUserDataMutation,useBlockUserMutation} = adminApiSlicer
+export const {useLogInMutation,useLogOutMutation,useGetUserDataMutation,useUpdateUserDataMutation,useBlockUserMutation,useDeleteUserMutation} = adminApiSlicer
