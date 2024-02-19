@@ -13,6 +13,7 @@ import PrivateRoute from './component/privateRoute.jsx'
 import Dashboard from './component/adminHomePage/adminHome.jsx'
 import AdminSignIn from './component/adminLogin/adminLogin.jsx'
 import AdminAddNewUser from './component/adminAddNewUser/addNewUser.jsx'
+import TextAudioConverter from './component/openAi/textAudioConverter.jsx'
 import Modal from 'react-modal';
 Modal.setAppElement('#root');
 const router = createBrowserRouter(
@@ -27,6 +28,7 @@ const router = createBrowserRouter(
       <Route path='/admin-home' element={<Dashboard/>}/>
       <Route path='/admin-sign' element={<AdminSignIn/>}/>
       <Route path='/admin-addNewUser' element={<AdminAddNewUser/>}/>
+      <Route path='/text-audio-converter' element={<TextAudioConverter/>} />
 
 
     </Route>

@@ -4,7 +4,7 @@ import { FaUserEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useLogOutMutation, useGetUserDataMutation, useUpdateUserDataMutation, useBlockUserMutation, useDeleteUserMutation } from "../../slicer/adminSlicer";
 import { adminlogOut, logOut } from '../../slicer/authSlicer'
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import { useNavigate, Link } from 'react-router-dom'
 import { useEffect, useState } from "react";
 import Modal from 'react-modal';
@@ -35,7 +35,7 @@ const Dashboard = () => {
     const [search, setSearch] = useState('')
     const [filteredUser, setFilteredUser] = useState([])
 
-    console.log('user is :', users)
+    console.log('user is :', filteredUser)
 
 
     const openEditProfileModal = () => {
@@ -48,7 +48,7 @@ const Dashboard = () => {
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const { userInfo } = useSelector((state) => state.auth)
+    // const { userInfo } = useSelector((state) => state.auth)
 
     const [adminLogout] = useLogOutMutation()
     const [getUserData] = useGetUserDataMutation()
@@ -143,9 +143,9 @@ const Dashboard = () => {
 
         const res = await blockUser(userId).unwrap()
 
-        if (userInfo && userInfo._id === userId) {
+        // if (userInfo && userInfo._id === userId) {
             dispatch(logOut())
-        }
+        // }
 
         const updatedUsers = users.map((user) => {
             if (user._id === userId) {
@@ -163,23 +163,20 @@ const Dashboard = () => {
     }
 
     const handleDelete = async () => {
-
-        console.log('userId id :', userId)
-
+        console.log('userId id :', userId);
         if (userId) {
-            const res = await deleteUser(userId).unwrap()
-            console.log('res is :', res);
-            setData((prev) => !prev)
-            setUserId(null)
-            setIsOpen(false)
-
-            // console.log('entered inton= dispatch')
-            dispatch(logOut())
-
+            try {
+                await deleteUser(userId).unwrap();
+                const updatedUsers = users.filter(user => user._id !== userId);
+                setUsers(updatedUsers);
+                setUserId(null);
+                setIsOpen(false);
+                dispatch(logOut());
+            } catch (err) {
+                console.log(err);
+            }
         }
-
-
-    }
+    };
 
     const handleDeleteClick = (userId) => {
         setUserId(userId)
@@ -244,7 +241,7 @@ const Dashboard = () => {
                             <tr key={user._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
 
                                 <td scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <img className="w-10 h-10 rounded-full" src="myimage.jpg" alt="Jese image" />
+                                    <img className="w-10 h-10 rounded-full" src={user.profile ? `profilePic/${user.profile}` : "default-icom.jpg"} alt="userImage" />
                                     <div className="ps-3">
                                         <div className="text-base font-semibold">{user.name}</div>
                                         <div className="font-normal text-gray-500">{user.email}</div>

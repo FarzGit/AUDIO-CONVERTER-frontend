@@ -1,50 +1,57 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import {Link} from 'react-router-dom'
-import {useSelector,useDispatch} from 'react-redux'
-import { useLogoutMutation } from '../../slicer/userApiSlicer'
-import { logOut } from '../../slicer/authSlicer'
-import { useNavigate } from 'react-router-dom'
+
+import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import './home.css'
 
 const homePage = () => {
 
-    const {userInfo} = useSelector((state)=>state.auth)
-
-    const [logOutApi] = useLogoutMutation()
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-
-
-    const logoutHandle = async ()=>{
-        try {
-        await logOutApi().unwrap()
-        dispatch(logOut())
-        navigate('/')
-        } catch (error) {
-            console.log(error)
-            
-        }
-    }
-
+    const { userInfo } = useSelector((state) => state.auth)
 
     return (
         <>
-            <div className="h-[68px] bg-slate-50 border-grey flex justify-center items-center shadow-md">
-                <div className="flex justify-end items-center w-full space-x-3 pr-4">
-                    {userInfo ?(
-                        <>
-                        <button onClick={logoutHandle} className='font-medium cursor-pointer'>Logout</button>
-                            <span className='font-semibold'>{userInfo.name}</span>
-                        </>
-                    ):(
-                        <>
-                        <Link to="/signIn" className="font-semibold cursor-pointer">Login</Link>
-                        </>
-                    )}
+
+            {userInfo ? (
+
+                <div className='m-10 flex'>
+
+                    <Link to="/text-audio-converter" >
+
+                        <div className="card-container">
+                            <div className="cards">
+                                <h1 className="text-black text-center ">Text Audio <span className='font-bold'>Converter</span></h1>
+                                
+                            </div>
+                        </div>
+
+                    </Link>
+
+
+
                     
-                   <Link to="/profile"> <img className="w-[50px] rounded-full cursor-pointer" src={userInfo && userInfo.profile ? `/profilePic/${userInfo.profile}` : 'default-icom.jpg'} alt="My Image" /></Link>
                 </div>
-            </div>
+
+            ) : (
+
+                <div className='flex flex-col items-center h-[500px] justify-center'>
+                    <div>
+                        <h1>Hi Users,Welcome and explore your Ai World </h1>
+                    </div>
+                    <div className='flex '>
+                        <Link to="/signUp" className='btn mr-3 rounded pl-2 pt-1'>SignUp</Link>
+                        <Link to="/signIn" className='btn rounded pl-2 pt-1'>SignIn</Link>
+
+                    </div>
+                </div>
+
+
+            )}
+
+
+
+
+            
         </>
     );
 }
